@@ -14,7 +14,7 @@ const CollectionPage = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleClickOutside = (event) => {   
+  const handleClickOutside = (event) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
       setIsSidebarOpen(false);
     }
@@ -24,8 +24,10 @@ const CollectionPage = () => {
     // Add event listener to handle clicks outside the sidebar
     document.addEventListener("mousedown", handleClickOutside);
     //cleanup function to remove the event listener
-    document.removeEventListener("mousedown", handleClickOutside);
-  });
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  },[]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -85,11 +87,19 @@ const CollectionPage = () => {
   return (
     <div className="flex flex-col lg:flex-row">
       {/* MObile Filter button */}
-      <button onClick={toggleSidebar} className="lg:hidden border p-2 flex justify-center ">
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden border p-2 flex justify-center "
+      >
         <FaFilter />
       </button>
       {/* Filter Sidebar */}
-      <div ref={sidebarRef} className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full "} fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static `}>
+      <div
+        ref={sidebarRef}
+        className={`${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full "
+        } fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static `}
+      >
         <FilterSidebar />
       </div>
       <div className="flex-grow p-4">
@@ -98,8 +108,7 @@ const CollectionPage = () => {
         <SortOptions />
 
         {/* Product Grid */}
-        <ProductGrid products={products}/>
-
+        <ProductGrid products={products} />
       </div>
     </div>
   );
