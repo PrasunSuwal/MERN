@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      match: [/.+\@.\..+/, "Please fill a valid email address"],
+      match: [/^\S+@\S+\.\S+$/, "Please fill a valid email address"],
     },
     password: {
       type: String,
@@ -38,3 +38,11 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+
+
+//Match password method
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model("User", userSchema);
